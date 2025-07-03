@@ -109,6 +109,9 @@ def pass_manager_dashboard():
             messagebox.showerror('Error','File Not found!')
         except FileExistsError:
             messagebox.showerror('Error!','File not exist!')
+
+    def logout():
+        root.destroy()
 # ---------------------------------------------------------------------------------------------------------------------------
 
     # create a label for heading
@@ -129,10 +132,13 @@ def pass_manager_dashboard():
     tk.Button(root, text='clear', command=clear, font=('Georgia',10,'bold'), bg='#feb236').grid(row=4,column=0, padx=10, pady=10)
 
     # button to delete
-    tk.Button(root, text='Delete data', command=delete, font=('Arial',10,'bold'), bg="#FF4F0F", fg='white', width=16).grid(row=1, column=2, pady=10, padx=10) 
+    tk.Button(root, text='Delete data', command=delete, font=('Arial',10,'bold'), bg="#FF4F0F", fg='white', width=16).grid(row=3, column=2, pady=10, padx=10) 
 
     # button to save data
     tk.Button(root, text='Save', command=save, font=('Georgia',10,'bold'), bg='#B6F500', width=15).grid(row=4, column=2, pady=10, padx=10) 
+
+    # button for logout
+    tk.Button(root, text="logout", command=logout, font=('Georgia',10, 'bold'), bg="#DDDDDD", width=15).grid(row=1, column=2, pady=10, padx=10)
 
     # creating a label for app name:
     app_name_label = tk.Label(root, text='App Name', bg='black', font=('Arial',11,'bold'), fg='white')
@@ -177,7 +183,7 @@ window.title('login')
 # geometry 
 window.geometry('400x250')
 # background color
-window.config('black')
+window.config(bg='black')
 # login logic
 def login():
     # get user input from input fields
@@ -198,10 +204,12 @@ def login():
     user = users_collection.find_one({"username": username, "password": password})
     if user:
         messagebox.showinfo('info','login successful')
+        username_entry.delete(0, tk.END)
+        pass_entry.delete(0, tk.END)
         # open password manager window
         pass_manager_dashboard()
         # destroy the login window
-        window.destroy()
+        #window.destroy()
     else:
         messagebox.showerror('Error','invalid credentials')
 
