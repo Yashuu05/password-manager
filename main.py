@@ -81,16 +81,13 @@ def pass_manager_dashboard():
         def delete_data():
 
             try:
-                with open('passwords.csv','r') as file:
-                    first_line = file.readline()
-                with open('passwords.csv','w') as f:
-                    f.write(first_line)
-                messagebox.showinfo('Info','all data deleted')
+                user_data_collection.delete_many({})
+                messagebox.showinfo('Info','all data deleted!')
                 delete_win.destroy()
-            except FileExistsError:
-                messagebox.showerror('No file exist!')
-            except FileNotFoundError:
-                messagebox.showerror('No file found!')
+            except ConnectionFailure:
+                messagebox.showerror('Error','Connot connect to Databse!')
+            except ConnectionError:
+                messagebox.showerror('Error','Connection Failed!')
 
         # function to go back
         def back():
