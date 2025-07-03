@@ -9,6 +9,8 @@ import os
 #-----------------------------------------------------
 # function for password manager dashboard
 def pass_manager_dashboard():
+    # withdraw the login window
+    window.withdraw()
     # create a window
     root = tk.Toplevel()
     # title for window
@@ -40,6 +42,7 @@ def pass_manager_dashboard():
     def copy():
         root.clipboard_clear()
         root.clipboard_append(password_entry.get())
+        messagebox.showinfo('message','password copied')
 
     #----------------------------------------------
     # function to clear the imput field
@@ -83,11 +86,11 @@ def pass_manager_dashboard():
         # delete window widgets
         # =============================================
         # heading 
-        tk.Label(delete_win, text='Delete pernamnently?', font=('Arial',10,'bold'), bg='black', fg='white').pack(pady=10)
+        tk.Label(delete_win, text='Delete permanently?', font=('Arial',14,'bold'), bg='black', fg='white').pack(pady=10)
         # delete button
-        tk.Button(delete_win, text='Yes', font=('Georgia',9,'bold'), bg='#FF4F0F', fg='white',command=delete_data).pack(pady=10)
+        tk.Button(delete_win, text='Yes', font=('Georgia',9,'bold'), bg='#FF4F0F', fg='white',command=delete_data, width=12).pack(pady=10)
         # back button
-        tk.Button(delete_win, text='No', font=('Georgia',9,'bold'), bg='#B6F500', command=back).pack(pady=10)
+        tk.Button(delete_win, text='No', font=('Georgia',9,'bold'), bg='#B6F500', command=back,width=12).pack(pady=10)
         #####################################################
 
 
@@ -112,6 +115,7 @@ def pass_manager_dashboard():
 
     def logout():
         root.destroy()
+        window.deiconify()
 # ---------------------------------------------------------------------------------------------------------------------------
 
     # create a label for heading
@@ -132,7 +136,7 @@ def pass_manager_dashboard():
     tk.Button(root, text='clear', command=clear, font=('Georgia',10,'bold'), bg='#feb236').grid(row=4,column=0, padx=10, pady=10)
 
     # button to delete
-    tk.Button(root, text='Delete data', command=delete, font=('Arial',10,'bold'), bg="#FF4F0F", fg='white', width=16).grid(row=3, column=2, pady=10, padx=10) 
+    tk.Button(root, text='Delete data', command=delete, font=('Georgia',10,'bold'), bg="#FF4F0F", fg='white', width=16).grid(row=3, column=2, pady=10, padx=10) 
 
     # button to save data
     tk.Button(root, text='Save', command=save, font=('Georgia',10,'bold'), bg='#B6F500', width=15).grid(row=4, column=2, pady=10, padx=10) 
@@ -181,7 +185,7 @@ window= tk.Tk()
 # title for window
 window.title('login')
 # geometry 
-window.geometry('400x250')
+window.geometry('350x250')
 # background color
 window.config(bg='black')
 # login logic
@@ -208,27 +212,30 @@ def login():
         pass_entry.delete(0, tk.END)
         # open password manager window
         pass_manager_dashboard()
-        # destroy the login window
-        #window.destroy()
+    elif username == '' and password == '':
+        messagebox.showerror('Error','Enter Credentials to proceed')
     else:
         messagebox.showerror('Error','invalid credentials')
 
-# username
-username_label = tk.Label(window, text="Username", font=('Arial',10,'bold'), bg='white')
-username_label.grid(row=0, column=0, pady=10, padx=10)
+# heading label
+heading = tk.Label(window, text='welcome!', font=('Georgia',18,'italic'), fg='white', bg='black').grid(row=0, column=1, pady=20)
 
+# username label
+username_label = tk.Label(window, text="Username", font=('Arial',10,'bold'), fg='white', bg='black')
+username_label.grid(row=1, column=0, pady=10, padx=10)
+# usermame entry
 username_entry = tk.Entry(window, bd=2, width=20)
-username_entry.grid(row=0, column=1, padx=10, pady=10)
+username_entry.grid(row=1, column=1, padx=10, pady=10)
 
-# password
-pass_label = tk.Label(window, text="Password", font=('Arial',10,'bold'), bg='white')
-pass_label.grid(row=1, column=0, pady=10, padx=10)
-
+# password label
+pass_label = tk.Label(window, text="Password", font=('Arial',10,'bold'), bg='black', fg='white')
+pass_label.grid(row=2, column=0, pady=10, padx=10)
+# password entry
 pass_entry = tk.Entry(window, bd=2, width=20)
-pass_entry.grid(row=1, column=1, padx=10, pady=10)
+pass_entry.grid(row=2, column=1, padx=10, pady=10)
 
 # login button
-login_btn = tk.Button(window, text='Login', command=login).grid(row=2, column=0, pady=10, padx=10)
+login_btn = tk.Button(window, text='Login', command=login, font=('Arial',10,'bold'), bg='#00FFDE',width=10).grid(row=3, column=1, pady=10, padx=10)
 
 # run winodw
 window.mainloop()
