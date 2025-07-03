@@ -106,26 +106,7 @@ def pass_manager_dashboard():
         tk.Button(delete_win, text='No', font=('Georgia',9,'bold'), bg='#B6F500', command=back,width=12).pack(pady=10)
         #####################################################
 
-    """
-    def save():
-
-        try:
-            with open('passwords.csv','a') as file:
-                app_name = app_name_entry.get()
-                username = username_entry.get()
-                password = password_entry.get()
-                data = ['\n',app_name,',',username,',',password]
-                file.writelines(data)
-            messagebox.showinfo('info','data saved successfully!')
-            # delete all data
-            password_entry.delete(0, tk.END)
-            username_entry.delete(0, tk.END)
-            app_name_entry.delete(0, tk.END)
-        except FileNotFoundError:
-            messagebox.showerror('Error','File Not found!')
-        except FileExistsError:
-            messagebox.showerror('Error!','File not exist!')
-    """
+    # saving data to database
     def save():
         app_name = app_name_entry.get()
         username = username_entry.get()
