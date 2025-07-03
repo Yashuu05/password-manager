@@ -17,8 +17,9 @@ mongo_uri = os.getenv("MONGO_URI")
 client = MongoClient(mongo_uri)
 
 # select your database name and collection name
-db = client["password_manager"]
-users_collection = db['users']
+db = client["password_manager"] # database name : password_manager
+users_collection = db['users'] # collection name to sore user credentials
+user_data_collection = db["user_data"] # collection to store app name, password and username
 
 # function for password manager dashboard
 def pass_manager_dashboard():
@@ -101,7 +102,7 @@ def pass_manager_dashboard():
         tk.Button(delete_win, text='Yes', font=('Georgia',9,'bold'), bg='#FF4F0F', fg='white',command=delete_data, width=12).pack(pady=10)
         # back button
         tk.Button(delete_win, text='No', font=('Georgia',9,'bold'), bg='#B6F500', command=back,width=12).pack(pady=10)
-        #####################################################
+        ###############################################
 
     # saving data to database
     def save():
