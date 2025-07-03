@@ -6,7 +6,20 @@ from tkinter import messagebox
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
+from pymongo.errors import DuplicateKeyError, ConnectionFailure
 #-----------------------------------------------------
+
+# load data from .env file
+load_dotenv()
+# Read MongoDB URI from environment
+mongo_uri = os.getenv("MONGO_URI")
+# create client to connect to your MongoDB Atlas string
+client = MongoClient(mongo_uri)
+
+# select your database name and collection name
+db = client["password_manager"]
+users_collection = db['users']
+
 # function for password manager dashboard
 def pass_manager_dashboard():
     # withdraw the login window
@@ -93,7 +106,7 @@ def pass_manager_dashboard():
         tk.Button(delete_win, text='No', font=('Georgia',9,'bold'), bg='#B6F500', command=back,width=12).pack(pady=10)
         #####################################################
 
-
+    """
     def save():
 
         try:
@@ -112,6 +125,28 @@ def pass_manager_dashboard():
             messagebox.showerror('Error','File Not found!')
         except FileExistsError:
             messagebox.showerror('Error!','File not exist!')
+    """
+    def save():
+        app_name = app_name_entry.get()
+        username = username_entry.get()
+        password = password_entry.get()
+
+        entry = {
+            "app name" : app_name,
+            "username" : username,
+            "password" : password,
+        }
+        try:
+            # insert the entry into database
+            users_collection.insert_one(entry)
+            # alert user
+            messagebox.showinfo('message','data saved successfully')
+        except ConnectionFailure:
+            messagebox.showerror("Error","Oops! Cannot connect to Database. Check Network Connection")
+        except DuplicateKeyError:
+            messagebox.showerror("Error","This app's credentials already exist.")
+        except ConnectionError:
+            messagebox.showerror('Error','Connection Failed!')
 
     def logout():
         root.destroy()
@@ -168,18 +203,6 @@ def pass_manager_dashboard():
 # ---------------------------------------------------------------------------------------------------------------------------------
 # PROGRAM FOR LOGIN WINDOW
 
-
-# load data from .env file
-load_dotenv()
-# Read MongoDB URI from environment
-mongo_uri = os.getenv("MONGO_URI")
-# create client to connect to your MongoDB Atlas string
-client = MongoClient(mongo_uri)
-
-# select your database name and collection name
-db = client["password_manager"]
-users_collection = db['users']
-
 # create login window
 window= tk.Tk()
 # title for window
@@ -193,29 +216,22 @@ def login():
     # get user input from input fields
     username = username_entry.get()
     password = pass_entry.get()
-    """"
-    # Check if user already exists
-    if users_collection.find_one({"username": username}):
-        print("User already exists!")
-
-    # Insert user credentials
-    users_collection.insert_one({
-        "username": username,
-        "password": password  # (in real-world, store hashed passwords!)
-    })
-    
-    """
-    user = users_collection.find_one({"username": username, "password": password})
-    if user:
-        messagebox.showinfo('info','login successful')
-        username_entry.delete(0, tk.END)
-        pass_entry.delete(0, tk.END)
-        # open password manager window
-        pass_manager_dashboard()
-    elif username == '' and password == '':
-        messagebox.showerror('Error','Enter Credentials to proceed')
-    else:
-        messagebox.showerror('Error','invalid credentials')
+    try:
+        user = users_collection.find_one({"username": username, "password": password})
+        if user:
+            messagebox.showinfo('info','login successful')
+            username_entry.delete(0, tk.END)
+            pass_entry.delete(0, tk.END)
+            # open password manager window
+            pass_manager_dashboard()
+        elif username == '' and password == '':
+            messagebox.showerror('Error','Enter Credentials to proceed')
+        else:
+            messagebox.showerror('Error','invalid credentials')
+    except ConnectionFailure:
+        messagebox("Eorror"," cannot connect to database")
+    except ConnectionError:
+        messagebox("Error","Connection Error!")
 
 # heading label
 heading = tk.Label(window, text='welcome!', font=('Georgia',18,'italic'), fg='white', bg='black').grid(row=0, column=1, pady=20)
