@@ -3,7 +3,9 @@ import tkinter as tk
 import string
 import random
 from tkinter import messagebox
-import json
+from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
 #-----------------------------------------------------
 # function for password manager dashboard
 def pass_manager_dashboard():
@@ -156,6 +158,18 @@ def pass_manager_dashboard():
 # ---------------------------------------------------------------------------------------------------------------------------------
 # PROGRAM FOR LOGIN WINDOW
 
+
+# load data from .env file
+load_dotenv()
+# Read MongoDB URI from environment
+mongo_uri = os.getenv("MONGO_URI")
+# create client to connect to your MongoDB Atlas string
+client = MongoClient(mongo_uri)
+
+# select your database name and collection name
+db = client["password_manager"]
+users_collection = db['users']
+
 # create login window
 window= tk.Tk()
 # title for window
@@ -164,5 +178,49 @@ window.title('login')
 window.geometry('400x250')
 # background color
 window.config('black')
+# login logic
+def login():
+    # get user input from input fields
+    username = username_entry.get()
+    password = pass_entry.get()
+    """"
+    # Check if user already exists
+    if users_collection.find_one({"username": username}):
+        print("User already exists!")
 
+    # Insert user credentials
+    users_collection.insert_one({
+        "username": username,
+        "password": password  # (in real-world, store hashed passwords!)
+    })
+    
+    """
+    user = users_collection.find_one({"username": username, "password": password})
+    if user:
+        messagebox.showinfo('info','login successful')
+        # open password manager window
+        pass_manager_dashboard()
+        # destroy the login window
+        window.destroy()
+    else:
+        messagebox.showerror('Error','invalid credentials')
 
+# username
+username_label = tk.Label(window, text="Username", font=('Arial',10,'bold'), bg='white')
+username_label.grid(row=0, column=0, pady=10, padx=10)
+
+username_entry = tk.Entry(window, bd=2, width=20)
+username_entry.grid(row=0, column=1, padx=10, pady=10)
+
+# password
+pass_label = tk.Label(window, text="Password", font=('Arial',10,'bold'), bg='white')
+pass_label.grid(row=1, column=0, pady=10, padx=10)
+
+pass_entry = tk.Entry(window, bd=2, width=20)
+pass_entry.grid(row=1, column=1, padx=10, pady=10)
+
+# login button
+login_btn = tk.Button(window, text='Login', command=login).grid(row=2, column=0, pady=10, padx=10)
+
+# run winodw
+window.mainloop()
